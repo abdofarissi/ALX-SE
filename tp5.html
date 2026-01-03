@@ -4,18 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stage</title>
-    <h2>Nom :</h2>
-    <input type="text" placeholder="Entrez votre nom">
-    <h2>Prénom :</h2>
-    <input type="text" placeholder="Entrez votre Prénom">
-    <h2>Email :</h2>
-    <input type="text" placeholder="exemple@fsbm.ma">
-    <h2>Téléphone :</h2>
-    <input type="text" placeholder="0600000000">
-    <h2>Ville :</h2>
-    <input type="text" placeholder="Choissisez ou tapez">
+    <fieldset>
+        <legend><h2>Informations personnelles</h2></legend>
+        <h2>Nom :</h2>
+        <input type="text" placeholder="Entrez votre nom">
+        <h2>Prénom :</h2>
+        <input type="text" placeholder="Entrez votre Prénom">
+        <h2>Email :</h2>
+        <input type="text" placeholder="exemple@fsbm.ma">
+        <h2>Téléphone :</h2>
+        <input type="text" placeholder="0600000000">
+        <h2>Ville :</h2>
+        <input type="text" placeholder="Choissisez ou tapez">
+    </fieldset>
 </head>
 <body>
+    <fieldset>
+        <legend>Profile du Candidat </legend>
+        <label for="niveau">Niveau d'études</label>
+        <select id="niveau" name="niveau" required>
+            <option value="" disabled selected>-- Sélectionnez votre niveau --</option>
+            <option value="licence">Licence</option>
+            <option value="master">Master</option>
+            <option value="doctorat">Doctorat</option>
+        </select>
+
+    </fieldset>
 
 </body>
 </html>
