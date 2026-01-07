@@ -51,7 +51,6 @@ int Taille(Node *head)
     }
     return taille;
 }
-
 void Recherche(Node * head, int val)
 {
     if (head == NULL)
@@ -77,7 +76,24 @@ void Recherche(Node * head, int val)
     }
     
 }
-
+Node * InsererD(Node * head, int val)
+{
+    Node * new = (Node* )malloc(sizeof(Node));
+    new ->valeur = val;
+    if (head == NULL)
+    {
+        new ->suivant = new;
+        return new;
+    }
+    Node * courant = head;
+    while (courant->suivant != head)
+    {
+       courant = courant ->suivant;
+    }
+    new ->suivant = head;
+    courant ->suivant = new;
+    return new;
+}
 Node * InsererM(Node *head, int val)
 {
     int pos ;
@@ -92,9 +108,10 @@ Node * InsererM(Node *head, int val)
         return new;
     }
     Node *cour = head;
-    if (pos <1 || pos > t +1)
+    if (pos <1 || pos > t+1)
     {
         printf("position invalide \n");
+        free(new);
     }
 
     if (pos == 1)
@@ -108,17 +125,132 @@ Node * InsererM(Node *head, int val)
         return new;
         
     }
-    do
-    {
-        for (int i = 0; i < pos -2; i++)
+    for (int i = 1; i < pos - 1; i++)
         {
             cour = cour ->suivant;
         }
         new ->suivant = cour ->suivant;
         cour ->suivant = new;
         return head;
-    } while (cour != head);
-    return new;
+}
+Node * I_fin(Node *head, int val)
+{
+    Node * new = Cree(val);
+    if (head == NULL)
+    {
+       new ->suivant = new;
+       return new;
+    }
+    Node *courant = head;
+    while (courant ->suivant != head)
+    {
+       courant = courant ->suivant;
+    }
+    courant ->suivant = new; 
+    new ->suivant = head;
+    return head;
+}
+Node * SupprimerD(Node *head)
+{
+    if (head == NULL)
+    {
+        printf("la liste est deja vide \n");    
+        return NULL;
+    }
+    if (head ->suivant == head)
+    {
+       free(head);
+       return NULL;
+    }
+    
+    Node * courant = head;
+    while (courant->suivant != head)
+    {
+       courant = courant ->suivant;
+    }
+    Node * newhead = head->suivant;
+    courant ->suivant = newhead;
+    free(head);
+    return newhead;
+}
+Node * SuppF(Node * head)
+{
+    if (head == NULL)
+    {
+       printf("la liste est deja vide \n");
+       return NULL;
+    }
+    if (head ->suivant == head)
+    {
+       free(head);
+       return NULL;
+    }
+    Node * courant = head;
+    while (courant ->suivant->suivant != head)
+    {
+        courant = courant ->suivant ;
+    }
+    Node * temp = courant ->suivant;
+    courant ->suivant = head;
+    free(temp);
+    return head;
+
+}
+Node * SuppM(Node * head)
+{
+    int p ;
+    printf("saisir la position a supprimer : ");
+    scanf("%d", &p);
+    int t = Taille(head);
+    if (head == NULL)
+    {
+        printf("la liste est deja vide \n");
+        return head;
+    }
+    if (head ->suivant == head)
+    {
+       free(head);
+       return NULL;
+    }
+    if (p < 1 || p > t )
+    {
+        printf("Position invalide \n");
+        return NULL;
+    }
+    if (p == 1)
+    {
+        Node * courant = head;
+        while (courant->suivant != head)
+        {
+            courant = courant ->suivant;
+        }
+        Node * newhead = head->suivant;
+        courant ->suivant = newhead;
+        free(head);
+        return newhead;
+    }
+    if (p == t)
+    {
+        Node * courant = head;
+        while (courant ->suivant->suivant != head)
+        {
+            courant = courant ->suivant ;
+        }
+        Node * temp = courant ->suivant;
+        courant ->suivant = head;
+        free(temp);
+        return head;
+    }
+    Node * courant = head;
+    for (int i = 1; i < p -1; i++)
+    {
+       courant = courant ->suivant;
+    }
+    Node * temp = courant ->suivant;
+    courant ->suivant = temp ->suivant;
+    free(temp);
+    return head;
+    
 }
 int main ()
 {
@@ -133,7 +265,6 @@ int main ()
     tail ->suivant = head;
 
     afficher(head);
-    InsererM(head, 14);
+    head =  SuppM(head);
     afficher(head);
-
 }
