@@ -56,3 +56,8 @@ Chanson * supprimerChanson(Chanson * head)
    free(temp);
    return head;
 }
+
+int main()
+{
+    return 0;
+}
