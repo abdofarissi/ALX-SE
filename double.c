@@ -119,6 +119,7 @@ Node * AjouterM(Node *head, int val)
     new ->suivant = courant ->suivant;
     new ->precedent = courant ;
     courant->suivant->precedent = new; 
+    courant ->suivant = new;
     return head;
 
 }
@@ -136,7 +137,7 @@ int main()
     tail ->precedent = second ;
 
     afficher(head);
-    head = Supprimer(head, 30);
+    head = AjouterM(head, 12);
     afficher(head);
 
     return 0;

@@ -22,6 +22,17 @@ Tache * CreeTache(int id, int statue, float duree)
     new ->statue = statue;
     new ->suiv = NULL;
     new ->prec = NULL;
+    return new;
+}
+const char* stat(int statut)
+{
+    switch (statut)
+    {
+        case 0: return "en attente";
+        case 1: return "en cours";
+        case 2: return "terminee";
+        default: return "statut inconnu";
+    }
 }
 Tache * ajouterTacheFin(Tache* head)
 {
@@ -81,17 +92,15 @@ Tache * Supprimer(Tache * head)
         printf("tache non trouvee\n");
         return head;
     }
-    if (courant ->prec == NULL)
+    else if (courant->suiv == NULL)
     {
-        head = courant ->suiv;
-        if (head != NULL)
-        {
-            head ->prec = NULL;
-        }
+        courant ->prec ->suiv = NULL;
     }
     else
     {
-        courant ->prec->suiv = courant ->prec;
+        courant->prec->suiv = courant->suiv;
+        courant->suiv->prec = courant->prec;
+
     }
     free(courant);
     printf("Tache Supprimee !! \n");
@@ -103,6 +112,7 @@ void Afficher (Tache * head)
     if (head == NULL)
     {
         printf("la liste est Vide \n");
+        return;
     }
     Tache * courant = head; 
     int i = 1;
@@ -117,6 +127,39 @@ void Afficher (Tache * head)
     }
 
 }
+
+void StatueCheck(Tache * head)
+{
+    int id;
+    printf("saisir l'id a Recherche : ");
+    scanf("%d", &id);
+    Tache * courant = head;
+    while (courant != NULL && courant->id != id)
+    {
+       courant = courant -> suiv;
+    }
+    if (courant == NULL)
+    {
+        printf("Id not found\n");
+    }
+    
+    if (courant ->prec == NULL)
+    {
+        printf("aucune tache precedent \n");
+        printf("la statue de tache Suivat est : %s \n" ,stat(courant->suiv->statue));
+    }
+    else if (courant ->suiv == NULL)
+    {
+        printf("la statue de tache Precedent est : %s \n" ,stat(courant->prec->statue));
+        printf("aucune tache suivant \n");
+    }
+    else
+    {
+         printf("la statue de tache Precedent est  %s \n" ,stat(courant->prec->statue));
+        printf("la statue de tache Suivat est : %s \n" ,stat(courant->suiv->statue));
+    }
+}
+
 int main ()
 {
     Tache *head;
@@ -132,7 +175,8 @@ int main ()
     Tail ->prec = second ; 
     Tail->suiv = NULL;
 
-    head = Supprimer(head);
+    StatueCheck(head);    
     Afficher(head);
+    StatueCheck(head);    
     return 0;
 }   

@@ -222,11 +222,6 @@ Etudiant *insererM(Etudiant *head ,char nom[20], int age , float Moyenne)
     int pos ;
     printf("entre la position : ");
     scanf("%d", &pos);
-    if(head == NULL)
-    {
-        printf("la liste est vide \n");
-        return NULL;
-    }
     Etudiant *new ;
     new = (Etudiant *)malloc(sizeof(Etudiant));
         strcpy(new ->nom , nom);
@@ -245,7 +240,7 @@ Etudiant *insererM(Etudiant *head ,char nom[20], int age , float Moyenne)
         printf("position invalide \n");
         return NULL;
     }
-    if (pos == 1)
+    if (pos == 1 && head == NULL)
     {   
         new ->suivant = head;
         return new;

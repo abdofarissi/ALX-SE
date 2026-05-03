@@ -58,7 +58,6 @@ int main ()
     while (1)
     {
         ajouterPrix(&sommet);
-        
     }
     
 

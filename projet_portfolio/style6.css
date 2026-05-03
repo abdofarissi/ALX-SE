@@ -1,0 +1,84 @@
+*{
+   box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6fb;
+    color: #333;
+}
+h1, h2 {
+    color: #2a5298;
+}
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #e3ecff;
+    border-bottom: 2px solid #c2d3ff;
+}
+img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+}
+.carte-profil{
+    margin: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 2px solid #c2d3ff;
+    border-radius: 12px;
+    text-align: center;
+    width: 600px;    
+    margin: 40px auto;
+}
+.bloc {
+    display: inline-block;
+    max-width: 600px;
+    margin: 30px;
+    padding: 20px;
+    border: 2px solid #c2d3ff;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.section-row {
+  display: flex;
+  justify-content: center;  
+  gap: 40px;                 
+  margin: 40px 0;
+}
+.propos {
+    background-color: #fff4e3;
+}
+
+.competences {
+    background-color: #99b1f475;
+}
+.bloc li:first-child {
+    font-weight: bold;
+}
+.bloc li:last-child {
+    color: red;
+}
+.bloc li:nth-child(2n){
+    background-color: rgba(0, 255, 255, 0.515);
+}
+
+.tail {
+    list-style: none;
+    background-color: #2a5298;
+    color: white;
+    height: 35px;
+    text-align: center;
+}
+.tail li {
+    display: inline-block;
+    margin-left: 30px;
+    padding: 10px;
+    
+}
+
+.tail li :hover {
+    background-color: #c2d3ff;
+}

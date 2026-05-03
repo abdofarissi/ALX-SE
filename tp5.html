@@ -4,32 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stage</title>
-    <fieldset>
-        <legend><h2>Informations personnelles</h2></legend>
-        <h2>Nom :</h2>
-        <input type="text" placeholder="Entrez votre nom">
-        <h2>Prénom :</h2>
-        <input type="text" placeholder="Entrez votre Prénom">
-        <h2>Email :</h2>
-        <input type="text" placeholder="exemple@fsbm.ma">
-        <h2>Téléphone :</h2>
-        <input type="text" placeholder="0600000000">
-        <h2>Ville :</h2>
-        <input type="text" placeholder="Choissisez ou tapez">
-    </fieldset>
 </head>
 <body>
     <fieldset>
-        <legend>Profile du Candidat </legend>
-        <label for="niveau">Niveau d'études</label>
-        <select id="niveau" name="niveau" required>
-            <option value="" disabled selected>-- Sélectionnez votre niveau --</option>
-            <option value="licence">Licence</option>
-            <option value="master">Master</option>
-            <option value="doctorat">Doctorat</option>
-        </select>
-
+        <legend><h2>Information Personnelles</h2></legend>
+        <h2>Nom :</h2>
+        <input type="text" placeholder="Entrez Votre Nom" required >
+        <h2>Prénom :</h2>
+        <input type="text" placeholder="Entrez Votre Prénom">
+        <h2>Email :</h2>
+        <input type="email" placeholder="exemple@fsbm.ma">
+        <h2>Téléphone :</h2>
+        <input type="tel" placeholder="0600000000">
+        <label for="ville"><h2>Ville :</h2></label>
+        <input type="text" id="ville" list="villes" placeholder="Choisissez ou tapez">
+            <datalist id="villes">
+            <option value="Fès">
+            <option value="Rabat">
+            <option value="Casablanca">
+            <option value="Tanger">
+            </datalist>
     </fieldset>
-
+    <fieldset>
+        <legend><h2>Profile de Candidat</h2></legend>
+        <label for="niveau"><h2>Niveau d'études :</h2></label>
+        <select name="niveau" id="niveau">
+            <option value="">-- Choisissez --</option>
+            <option value="License">License</option>
+            <option value="Master">Master</option>
+           <option value="Doctorat">Doctorat</option>
+        </select>
+        <form>
+            <label for="langues"><h2>Langues Parlées :</h2></label>
+            <select name="langues" id="langues" multiple size="4">
+                <option value="arabe">Arabe</option>
+                <option value="francais">francais</option>
+                <option value="anglais">Anglais</option>
+                <option value="espagnol">Espagnol</option>
+            </select>
+        </form>
+        <form>
+            <label for="Competence"><h2>Compétences Techniques : </h2></label>
+            <input type="checkbox" id="HTML/CSS" name="Competence" value="HTML/CSS">
+            <label for="HTML/CSS">HTML/CSS</label>
+            <input type = "checkbox" id ="JavaScript" name="Competence" value="JavaScript">
+            <label for="JavaScript">JavaScript</label>
+            <input type = "checkbox" id ="PHP" name="Competence" value="PHP">
+            <label for="PHP">PHP</label>
+            <input type = "checkbox" id ="Python" name="Competence" value="Python">
+            <label for="Python">Python</label>
+            <input type = "checkbox" id ="SQL" name="Competence" value="SQL">
+            <label for="SQL">SQL</label>
+        </form>
+        <form>
+            <label for="Stage"><h2>Type de stage recherché :</h2></label>
+            <input type ="radio" id ="Devlop" name="Stage" value="Devlop">
+            <label for="Devlop">Développement Web</label>
+            <input type ="radio" id ="Data" name="Stage" value="Data">
+            <label for="Data">Data</label>
+            <input type ="radio" id ="Reseau" name="Stage" value="Reseau">
+            <label for="Reseau">Réseau </label>
+        </form>
+    </fieldset>
+    <fieldset>
+        <legend><h2>Message de motivation </h2></legend>
+        <form>
+            <label for="Message"><h2>Votre Message :</h2></label>
+            <textarea id="Message" name="Message" rows="10" cols="70" placeholder="Expliquez pourquoi vous Postulez..." ></textarea>
+        </form>
+    </fieldset>
+    <fieldset>
+    </fieldset>
 </body>
 </html>
