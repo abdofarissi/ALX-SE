@@ -19,6 +19,7 @@ class file_float {
             debut = f.debut;
             fin = f.fin;
             nb = f.nb;
+            file = new float[taille];
             for (int i = 0; i < nb; i++)
             {
                 file[i] = f.file[i];
@@ -74,7 +75,7 @@ class file_float {
             else
             {
                 float val = file[debut ];
-                debut = (debut -1)% taille;
+                debut = (debut+ 1)% taille;
                 nb--;
                 return val;
             }
@@ -95,7 +96,8 @@ class file_float {
                 cout<<"la file est vide"<<endl;
                 return -1;
             }
-            return file[fin];
+            int dernier = (fin - 1 + taille) % taille;
+            return file[dernier];
         }
         int longueur()
         {
@@ -109,9 +111,11 @@ class file_float {
             }
             else
             {
+
                 for (int i = 0; i < nb; i++)
                 {
-                    cout<<"F["<<i<<"] = "<<file[i]<<endl;
+                    int pos = (debut + i) % taille;
+                    cout<<"F["<<pos<<"] = "<<file[pos]<<endl;
                 }
             }
         }
@@ -119,9 +123,10 @@ class file_float {
         {
             for (int i = 0; i < nb; i++)
             {
-                if (file[i] == var)
+                int pos = (debut + i) % taille;
+                if (file[pos] == var)
                 {
-                    cout<<"la valeur"<<var<< "trouvée a la position "<<i<<endl;
+                    cout<<"la valeur "<<var<< "trouvée a la position "<<pos<<endl;
                     return 1;
                 }
             }
@@ -130,7 +135,63 @@ class file_float {
         }
         float maximum()
         {
-            
+             if (vide())
+            {
+                cout << "la file est vide" << endl;
+                return -1;
+            }
+            float max = file[debut];
+            for (int i = 1; i < nb; i++)
+            {
+                int pos = (debut + i) % taille;
+                if (file[pos]> max)
+                {
+                    max = file[pos];
+                }              
+            }
+            return max;
         }
-
+        float minimum()
+        {
+            if(vide())
+            {
+                cout << "la file est vide" << endl;
+                return -1;
+            }
+            float min = file [debut];
+            for (int i = 0; i < nb; i++)
+            {
+                int pos = (debut + i)% taille;
+                if (file[pos]< min)
+                {
+                    min = file[pos];
+                }
+            }
+            return min;         
+        }
+        void vider()
+        {
+            nb = 0;
+            fin = 0;
+            debut = 0;
+        }
 };
+int main()
+{   
+    file_float f;
+    f.enfiler(12);
+    f.enfiler(25);
+    f.enfiler(47.35);
+    f.enfiler(7);
+    f.enfiler(87);
+    f.enfiler(67);
+    f.enfiler(8);
+    f.afficher();
+    f.rechercher(67);
+    f.defiler();
+    cout<<"le maximum est : "<<f.maximum()<<endl;
+    cout<<"le minimum est : "<<f.minimum()<<endl;
+    cout<<"la longeur est : "<<f.longueur()<<endl;
+    cout<<"la téte est : "<<f.tete()<<endl;
+    f.afficher();
+}
