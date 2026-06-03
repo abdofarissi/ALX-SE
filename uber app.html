@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Uber Income</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg:      #0c0c0e;
+  --surface: #141416;
+  --card:    #1c1c1f;
+  --lift:    #242428;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text:    #f2f2f7;
+  --muted:   #8e8e93;
+  --dim:     #48484a;
+  --green:   #30d158;
+  --green-bg:#0d2918;
+  --blue:    #0a84ff;
+  --blue-bg: #051a3a;
+  --red:     #ff453a;
+  --red-bg:  #2a0d0b;
+  --amber:   #ffd60a;
+  --purple:  #bf5af2;
+  --purple-bg:#1e0a30;
+  --r:       16px;
+  --r-sm:    10px;
+}
+
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; overscroll-behavior: none; }
+
+/* ── Layout ── */
+.app { display: flex; flex-direction: column; min-height: 100vh; max-width: 430px; margin: 0 auto; background: var(--bg); }
+
+/* ── Header ── */
+.header {
+  background: rgba(12,12,14,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid var(--border);
+  padding: env(safe-area-inset-top, 16px) 20px 14px;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-row { display: flex; align-items: center; justify-content: space-between; }
+.header-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+.header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+/* ── Month Tabs ── */
+.month-tabs-wrap { overflow-x: auto; padding: 14px 16px 0; scrollbar-width: none; }
+.month-tabs-wrap::-webkit-scrollbar { display: none; }
+.month-tabs { display: flex; gap: 8px; width: max-content; }
+.month-tab {
+  background: var(--card);
+  border: 0.5px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  position: relative;
+}
+.month-tab.has-data::after {
+  content: '';
+  position: absolute;
+  top: 6px; right: 8px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.month-tab.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.month-tab.active.has-data::after { background: var(--green); }
+
+/* ── Section ── */
+.section { padding: 14px 16px 0; }
+
+/* ── Summary Cards ── */
+.cards-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.cards-row.full { grid-template-columns: 1fr; }
+.mini-card {
+  background: var(--card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 13px 14px;
+}
+.mini-card.green-card { background: var(--green-bg); border-color: rgba(48,209,88,0.15); }
+.mini-card.blue-card  { background: var(--blue-bg);  border-color: rgba(10,132,255,0.15); }
+.mini-card.red-card   { background: var(--red-bg);   border-color: rgba(255,69,58,0.15); }
+.mini-card.purple-card{ background: var(--purple-bg);border-color: rgba(191,90,242,0.15); }
+.mini-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+.mini-value { font-size: 20px; font-weight: 500; font-family: 'DM Mono', monospace; letter-spacing: -0.5px; }
+.mini-unit  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── Banners ── */
+.banner {
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.banner-icon { font-size: 16px; flex-shrink: 0; }
+.banner.red   { background: var(--red-bg);   border: 0.5px solid rgba(255,69,58,0.2); color: #ff6961; }
+.banner.blue  { background: var(--blue-bg);  border: 0.5px solid rgba(10,132,255,0.2); color: #48a0ff; }
+
+/* ── Bar ── */
+.bar-section { margin-bottom: 10px; }
+.bar-label-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.bar-track { height: 6px; background: var(--lift); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+.bar-space { height: 8px; }
+
+/* ── Averages ── */
+.avg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.avg-item { background: var(--card); border-radius: var(--r-sm); padding: 10px 4px; text-align: center; border: 0.5px solid var(--border); }
+.avg-lbl { font-size: 10px; color: var(--muted); margin-bottom: 4px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.avg-val { font-size: 13px; font-weight: 500; font-family: 'DM Mono', monospace; }
+
+/* ── Day Entries ── */
+.entries-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 16px 10px;
+}
+.entries-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.add-day-btn {
+  background: var(--green);
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  padding: 7px 16px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+  transition: opacity 0.15s;
+}
+.add-day-btn:active { opacity: 0.7; }
+
+.days-list { padding: 0 16px; }
+
+.day-card {
+  background: var(--card);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.day-card.err-card { border-color: rgba(255,69,58,0.4); }
+
+.day-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 8px;
+  border-bottom: 0.5px solid var(--border);
+}
+.day-number { font-size: 13px; font-weight: 600; color: var(--muted); }
+.day-date   { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; }
+.day-delete {
+  background: none; border: none;
+  color: var(--dim); font-size: 20px;
+  cursor: pointer; padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.day-delete:active { color: var(--red); }
+
+.day-inputs { display: grid; grid-template-columns: 1fr 1fr; }
+.day-input-group { padding: 10px 14px; }
+.day-input-group:first-child { border-right: 0.5px solid var(--border); }
+.day-input-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; font-weight: 500; }
+.day-input-field {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 22px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 400;
+  width: 100%;
+  outline: none;
+  -moz-appearance: textfield;
+  letter-spacing: -0.5px;
+}
+.day-input-field::placeholder { color: var(--dim); }
+.day-input-field::-webkit-inner-spin-button { display: none; }
+.day-input-currency { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.day-online-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--purple-bg);
+  border-top: 0.5px solid rgba(191,90,242,0.1);
+}
+.day-online-label { font-size: 11px; color: var(--purple); opacity: 0.8; }
+.day-online-vals { display: flex; gap: 14px; align-items: center; }
+.day-online-net { font-size: 13px; font-weight: 600; color: var(--purple); font-family: 'DM Mono', monospace; }
+.day-online-tax { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.day-err-msg { font-size: 11px; color: var(--red); padding: 6px 14px; background: var(--red-bg); }
+
+/* ── Bottom padding ── */
+.bottom-pad { height: calc(env(safe-area-inset-bottom, 0px) + 30px); }
+
+/* ── Clear button ── */
+.clear-wrap { padding: 14px 16px 0; display: flex; justify-content: flex-end; }
+.clear-month-btn {
+  background: none; border: 0.5px solid rgba(255,69,58,0.3);
+  border-radius: 8px; color: var(--red); font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  padding: 6px 14px; cursor: pointer;
+}
+.clear-month-btn:active { background: var(--red-bg); }
+
+/* ── Error text ── */
+.err-global { font-size: 12px; color: var(--red); padding: 6px 16px 0; min-height: 20px; }
+
+/* ── Save indicator ── */
+.save-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0;
+  transition: opacity 0.5s;
+  flex-shrink: 0;
+}
+.save-dot.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <div class="header-title">🚗 Uber Income</div>
+        <div class="header-sub">auto-saved · monthly tracker</div>
+      </div>
+      <div class="save-dot" id="save-dot"></div>
+    </div>
+  </div>
+
+  <div class="month-tabs-wrap">
+    <div class="month-tabs" id="month-tabs"></div>
+  </div>
+
+  <div class="section" style="padding-top:14px">
+    <div class="banner blue">
+      <span class="banner-icon">ⓘ</span>
+      <span>Paiements online : <strong>10% de taxe</strong> déduits automatiquement</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="cards-row">
+      <div class="mini-card green-card">
+        <div class="mini-label">Cash</div>
+        <div class="mini-value" id="s-cash" style="color:var(--green)">0.00</div>
+        <div class="mini-unit">DH</div>
+      </div>
+      <div class="mini-card purple-card">
+        <div class="mini-label">Online (net)</div>
+        <div class="mini-value" id="s-online" style="color:var(--purple)">0.00</div>
+        <div class="mini-unit" id="s-online-tax" style="color:var(--muted)">taxe: 0.00 DH</div>
+      </div>
+    </div>
+    
+    <div class="cards-row full">
+      <div class="mini-card">
+        <div class="mini-label">Total brut</div>
+        <div class="mini-value" id="s-total">0.00</div>
+        <div class="mini-unit">DH</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="bar-section">
+      <div class="bar-label-row">
+        <span style="color:var(--green)">Cash</span>
+        <span id="pct-cash">0%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="bar-cash" style="width:0%;background:var(--green)"></div>
+      </div>
+    </div>
+    <div class="bar-space"></div>
+    <div class="bar-section">
+      <div class="bar-label-row">
+        <span style="color:var(--purple)">Online (net)</span>
+        <span id="pct-online">0%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="bar-online" style="width:0%;background:var(--purple)"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="avg-grid">
+      <div class="avg-item">
+        <div class="avg-lbl">Total / jour</div>
+        <div class="avg-val" id="avg-total">—</div>
+      </div>
+      <div class="avg-item">
+        <div class="avg-lbl" style="color:var(--green)">Cash / jour</div>
+        <div class="avg-val" id="avg-cash" style="color:var(--green)">—</div>
+      </div>
+      <div class="avg-item">
+        <div class="avg-lbl" style="color:var(--purple)">Online net</div>
+        <div class="avg-val" id="avg-online" style="color:var(--purple)">—</div>
+      </div>
+      <div class="avg-item">
+        <div class="avg-lbl" style="color:var(--red)">Taxe / jour</div>
+        <div class="avg-val" id="avg-tax" style="color:var(--red)">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="entries-header">
+    <span class="entries-title">Jours</span>
+    <button class="add-day-btn" onclick="addDay()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Ajouter jour
+    </button>
+  </div>
+
+  <div class="days-list" id="days-list"></div>
+
+  <div class="clear-wrap">
+    <button class="clear-month-btn" onclick="clearMonth()">🗑 Effacer ce mois</button>
+  </div>
+
+  <div class="err-global" id="err-global"></div>
+  <div class="bottom-pad"></div>
+</div>
+
+<script>
+const INSURANCE = 5933;
+const ONLINE_TAX = 0.10;
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MONTHS_SHORT = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+const now = new Date();
+let currentMonthKey = '';
+let rows = [];
+let uid = 0;
+let saveTimer = null;
+
+// ── Keys ──
+function mKey(y, m) { return 'ubr_' + y + '_' + String(m).padStart(2,'0'); }
+function allMonths() {
+  const list = [];
+  for (let y = now.getFullYear(); y >= now.getFullYear() - 1; y--) {
+    for (let m = 11; m >= 0; m--) list.push({ y, m, key: mKey(y, m) });
+  }
+  return list;
+}
+
+// ── Tabs ──
+function buildTabs() {
+  const wrap = document.getElementById('month-tabs');
+  wrap.innerHTML = '';
+  allMonths().forEach(({ y, m, key }) => {
+    const btn = document.createElement('button');
+    btn.className = 'month-tab';
+    btn.id = 'tab-' + key;
+    btn.textContent = MONTHS_SHORT[m] + ' ' + y;
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      try { const d = JSON.parse(raw); if (d.rows && d.rows.some(r => r.t)) btn.classList.add('has-data'); } catch(e){}
+    }
+    btn.onclick = () => switchMonth(y, m);
+    wrap.appendChild(btn);
+  });
+  // scroll current into view after render
+  setTimeout(() => {
+    const el = document.getElementById('tab-' + currentMonthKey);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, 50);
+}
+
+function markTabActive(key) {
+  document.querySelectorAll('.month-tab').forEach(t => t.classList.remove('active'));
+  const el = document.getElementById('tab-' + key);
+  if (el) el.classList.add('active');
+}
+
+function refreshTabDot(key) {
+  const el = document.getElementById('tab-' + key);
+  if (!el) return;
+  const hasData = rows.some(id => {
+    const v = document.getElementById('t-' + id);
+    return v && parseFloat(v.value) > 0;
+  });
+  el.classList.toggle('has-data', hasData);
+}
+
+// ── Month switch ──
+function switchMonth(y, m) {
+  currentMonthKey = mKey(y, m);
+  markTabActive(currentMonthKey);
+  clearRows();
+  loadMonth();
+}
+
+function clearRows() {
+  rows = []; uid = 0;
+  document.getElementById('days-list').innerHTML = '';
+}
+
+function loadMonth() {
+  const raw = localStorage.getItem(currentMonthKey);
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      if (data.rows && data.rows.length) {
+        data.rows.forEach(r => addDay(r.t || '', r.c || '', r.date || ''));
+      }
+    } catch(e) {}
+  }
+  if (rows.length === 0) addDay();
+  recalc();
+}
+
+// ── Save ──
+function save() {
+  const data = {
+    rows: rows.map(id => ({
+      t: document.getElementById('t-'+id)?.value || '',
+      c: document.getElementById('c-'+id)?.value || '',
+      date: document.getElementById('date-'+id)?.value || ''
+    }))
+  };
+  localStorage.setItem(currentMonthKey, JSON.stringify(data));
+  refreshTabDot(currentMonthKey);
+  flashSave();
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 600);
+}
+
+function flashSave() {
+  const dot = document.getElementById('save-dot');
+  dot.classList.add('show');
+  clearTimeout(dot._timer);
+  dot._timer = setTimeout(() => dot.classList.remove('show'), 1800);
+}
+
+function clearMonth() {
+  if (!confirm('Effacer toutes les entrées de ce mois ?')) return;
+  localStorage.removeItem(currentMonthKey);
+  clearRows();
+  addDay();
+  recalc();
+  buildTabs();
+  markTabActive(currentMonthKey);
+}
+
+// ── Day card ──
+function todayStr() {
+  return String(now.getDate()).padStart(2,'0') + '/' + String(now.getMonth()+1).padStart(2,'0');
+}
+
+function addDay(t='', c='', date='') {
+  const id = ++uid;
+  rows.push(id);
+  const dayNum = rows.length;
+  const dateVal = date || todayStr();
+
+  const card = document.createElement('div');
+  card.className = 'day-card';
+  card.id = 'card-' + id;
+  card.innerHTML = `
+    <div class="day-card-header">
+      <span class="day-number" id="lbl-${id}">Jour ${dayNum}</span>
+      <span class="day-date">${dateVal}</span>
+      <button class="day-delete" onclick="removeDay(${id})" aria-label="Supprimer">×</button>
+    </div>
+    <div class="day-inputs">
+      <div class="day-input-group">
+        <div class="day-input-label">Total</div>
+        <input class="day-input-field" type="number" id="t-${id}" placeholder="0.00"
+               min="0" step="0.01" value="${t}" inputmode="decimal"
+               oninput="onInput(${id})">
+        <div class="day-input-currency">DH</div>
+      </div>
+      <div class="day-input-group">
+        <div class="day-input-label">Cash</div>
+        <input class="day-input-field" type="number" id="c-${id}" placeholder="0.00"
+               min="0" step="0.01" value="${c}" inputmode="decimal"
+               oninput="onInput(${id})">
+        <div class="day-input-currency">DH</div>
+      </div>
+    </div>
+    <div class="day-online-row" id="orow-${id}" style="display:none">
+      <span class="day-online-label">Online net</span>
+      <div class="day-online-vals">
+        <span class="day-online-net" id="onet-${id}">—</span>
+        <span class="day-online-tax" id="otax-${id}"></span>
+      </div>
+    </div>
+    <div class="day-err-msg" id="derr-${id}" style="display:none">⚠ Le cash dépasse le total</div>
+  `;
+  document.getElementById('days-list').appendChild(card);
+  updateDayDisplay(id);
+}
+
+function removeDay(id) {
+  rows = rows.filter(r => r !== id);
+  document.getElementById('card-' + id).remove();
+  rows.forEach((r, i) => {
+    const lbl = document.getElementById('lbl-' + r);
+    if (lbl) lbl.textContent = 'Jour ' + (i + 1);
+  });
+  recalc(); save();
+}
+
+function onInput(id) {
+  updateDayDisplay(id);
+  recalc();
+  scheduleSave();
+}
+
+function updateDayDisplay(id) {
+  const t = parseFloat(document.getElementById('t-'+id)?.value) || 0;
+  const c = parseFloat(document.getElementById('c-'+id)?.value) || 0;
+  const onlineGross = Math.max(0, t - c);
+  const onlineNet = onlineGross * (1 - ONLINE_TAX);
+  const tax = onlineGross * ONLINE_TAX;
+  const hasErr = c > t && c > 0;
+
+  document.getElementById('card-'+id).classList.toggle('err-card', hasErr);
+  document.getElementById('derr-'+id).style.display = hasErr ? 'block' : 'none';
+
+  const orow = document.getElementById('orow-'+id);
+  if (onlineGross > 0 && t > 0) {
+    orow.style.display = 'flex';
+    document.getElementById('onet-'+id).textContent = onlineNet.toFixed(2) + ' DH';
+    document.getElementById('otax-'+id).textContent = '−' + tax.toFixed(2) + ' DH';
+  } else {
+    orow.style.display = 'none';
+  }
+}
+
+// ── Recalc ──
+function recalc() {
+  let total = 0, cash = 0, onlineNet = 0, onlineTax = 0, workDays = 0;
+  rows.forEach(id => {
+    const t = parseFloat(document.getElementById('t-'+id)?.value) || 0;
+    const c = Math.min(parseFloat(document.getElementById('c-'+id)?.value) || 0, t);
+    if (t > 0) workDays++;
+    const og = Math.max(0, t - c);
+    total += t;
+    cash += c;
+    onlineNet += og * (1 - ONLINE_TAX);
+    onlineTax += og * ONLINE_TAX;
+  });
+
+  const cashPct = total > 0 ? Math.round(cash / total * 100) : 0;
+  const onlinePct = 100 - cashPct;
+
+  document.getElementById('s-total').textContent     = total.toFixed(2);
+  document.getElementById('s-cash').textContent      = cash.toFixed(2);
+  document.getElementById('s-online').textContent    = onlineNet.toFixed(2);
+  document.getElementById('s-online-tax').textContent= 'taxe: ' + onlineTax.toFixed(2) + ' DH';
+
+  document.getElementById('pct-cash').textContent    = cashPct + '%';
+  document.getElementById('pct-online').textContent  = onlinePct + '%';
+  document.getElementById('bar-cash').style.width    = cashPct + '%';
+  document.getElementById('bar-online').style.width  = onlinePct + '%';
+
+  const dash = workDays === 0;
+  document.getElementById('avg-total').textContent   = dash ? '—' : (total/workDays).toFixed(0);
+  document.getElementById('avg-cash').textContent    = dash ? '—' : (cash/workDays).toFixed(0);
+  document.getElementById('avg-online').textContent  = dash ? '—' : (onlineNet/workDays).toFixed(0);
+  document.getElementById('avg-tax').textContent     = dash ? '—' : (onlineTax/workDays).toFixed(0);
+}
+
+// ── Init ──
+const curKey = mKey(now.getFullYear(), now.getMonth());
+currentMonthKey = curKey;
+buildTabs();
+markTabActive(curKey);
+loadMonth();
+</script>
+</body>
+</html>
